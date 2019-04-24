@@ -36,26 +36,28 @@ void setup() {
 
 void loop() {
 
-///////// SENSOR TESTING /////////////
+  ///////// SENSOR TESTING /////////////
   m0.checkSensors();
   testSensors();
 //  Serial.print(m0.getSensorThresh(0)); Serial.print(' ');
 //  Serial.print(m0.getSensorVal(0)); Serial.print(' ');
 //  Serial.println(m0.isSensorPastThresh(0));
-//  if(m0.isSensorRise(0)){
-//    Serial.println("Rising Edge Detected.");
-//    delay(1000);
-//  }
-//  if(m0.isSensorFall(0)){
-//    Serial.println("Falling Edge Detected.");
-//    delay(1000);
-//  }
+  if(m0.isSensorRise(0)){
+    Serial.println("Rising Edge Detected.");
+    delay(1000);
+  }
+  if(m0.isSensorFall(0)){
+    Serial.println("Falling Edge Detected.");
+    delay(1000);
+  }
 
 //  ///////// DOOR TESTING ////////////////
-//  m0.openDoor(0);
+//  m0.openDoor(3);
 //  printDoorsState(); Serial.println(' ');
-//  m0.closeDoor(0);
+//  delay(200);
+//  m0.closeDoor(3);
 //  printDoorsState(); Serial.println(' ');
+//  delay(200);
   
 }
 
@@ -69,7 +71,7 @@ void testSyringePump(SyringePump syringePump, float mL, int timeDelay) {
 void testSensors() {
   // Comment out lines with unwanted values -> Fewer values will make code run faster
   printSensorsVals();
-  printSensorsThresh();
+//  printSensorsThresh();
   printSensorsValIsPastThresh();
   printSensorsValWasPastThresh();
   printSensorsIsFall();
