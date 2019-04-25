@@ -17,45 +17,61 @@ Door d3(PIN_DOOR_3, POS_D3[0], POS_D3[1]);
 Door d4(PIN_DOOR_4, POS_D4[0], POS_D4[1]);
 Door d5(PIN_DOOR_5, POS_D5[0], POS_D5[1]);
 
-Module m0(PIN_ID, s0, s1, s2, s3, d0, d1, d2, d3, d4, d5);
-EndModule e0(PIN_ID, s0, s1, s2, d0, d1, d2, d3, d4, d5, r0, r1, r2);
+Module m(PIN_ID, s0, s1, s2, s3, d0, d1, d2, d3, d4, d5);
+EndModule e(PIN_ID, s0, s1, s2, d0, d1, d2, d3, d4, d5, r0, r1, r2);
+
+bool needsToSetPath = true;
 
 void setup() {
 //  r0.syringeSetup();
 //  r1.syringeSetup();
 //  r1.syringeSetup();
 
-  m0.moduleSetup();
-  m0.testDoors(1500, 1500);
+  m.moduleSetup();
+  m.testDoors(1500, 1500);
 }
 
 void loop() {
 
   ///////// SENSOR TESTING /////////////
-  m0.checkSensors();
-  m0.testSensors(63);
+  m.checkSensors();
+  m.testSensors(0b111111);
   
-  if(m0.isSensorRise(0)){
+  if(m.isSensorRise(0)){
     Serial.println("Rising Edge Detected.");
     delay(1000);
   }
-  if(m0.isSensorFall(0)){
+  if(m.isSensorFall(0)){
     Serial.println("Falling Edge Detected.");
     delay(1000);
   }
 
 //  ///////// DOOR TESTING ////////////////
-//  m0.setPath('r');
-//  m0.printDoorsStates(); Serial.println(' ');
+//  m.setPath('r');
+//  m.printDoorsStates(); Serial.println(' ');
 //  delay(1000);
 //  
-//  m0.setPath('c');
-//  m0.printDoorsStates(); Serial.println(' ');
+//  m.setPath('c');
+//  m.printDoorsStates(); Serial.println(' ');
 //  delay(1000);
 //
-//  m0.setPath('l');
-//  m0.printDoorsStates(); Serial.println(' ');
+//  m.setPath('l');
+//  m.printDoorsStates(); Serial.println(' ');
 //  delay(1000);
+
+//  /////////// INTEGRATED TESTING ////////////
+//  m.checkSensors();
+//  
+//  if(needsToSetPath){
+//    m.setPath('r');
+//    needsToSetPath = false;
+//  }
+//  else{
+//    if(m.isSensorFall(0)){
+//      m.closeDoor(2);
+//    }
+//  }
+//  m.printDoorsStates(); Serial.println(' ');
 }
 
 /////////////////////// SYRINGE PUMP CODE //////////////////////////
@@ -73,15 +89,15 @@ void moveSyringePump(SyringePump syringePump, bool isDirUp) {
 }
 /////////////////// COMMUNICATION CODE ///////////////////////////////////////////////////////
 void slavePracticeSetup() {
-  m0.moduleSetup();
+  m.moduleSetup();
   Serial.begin(115200);
 }
 
 void slavePracticeProtocol() {
-  unsigned int commands = m0.receiveCommands();
+  unsigned int commands = m.receiveCommands();
   Serial.print(millis()); Serial.print(" ");
-  Serial.print(m0.id()); Serial.print(" ");
+  Serial.print(m.id()); Serial.print(" ");
   Serial.print(commands); Serial.print(" ");
   Serial.println(commands, BIN);
-  m0.interpretCommands(commands);
+  m.interpretCommands(commands);
 }
