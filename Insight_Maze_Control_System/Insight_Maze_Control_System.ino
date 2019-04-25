@@ -1,8 +1,6 @@
 #include "InsightMaze.h"
 #include "globals.h"
 
-bool needsToConfigure = true;
-
 SyringePump r0(SYRINGE_0_STEP_PIN, SYRINGE_0_DIR_PIN, SYRINGE_SPML, SYRINGE_MAX_VOL);
 SyringePump r1(SYRINGE_1_STEP_PIN, SYRINGE_1_DIR_PIN, SYRINGE_SPML, SYRINGE_MAX_VOL);
 SyringePump r2(SYRINGE_2_STEP_PIN, SYRINGE_2_DIR_PIN, SYRINGE_SPML, SYRINGE_MAX_VOL);
@@ -27,21 +25,17 @@ void setup() {
 //  r1.syringeSetup();
 //  r1.syringeSetup();
 
-  testDoors(1500, 1500);
-
   m0.moduleSetup();
-
-  Serial.begin(9600);
+  m0.testDoors(1500, 1500);
+  
 }
 
 void loop() {
 
   ///////// SENSOR TESTING /////////////
   m0.checkSensors();
-  testSensors();
-//  Serial.print(m0.getSensorThresh(0)); Serial.print(' ');
-//  Serial.print(m0.getSensorVal(0)); Serial.print(' ');
-//  Serial.println(m0.isSensorPastThresh(0));
+  m0.testSensors(63);
+  
   if(m0.isSensorRise(0)){
     Serial.println("Rising Edge Detected.");
     delay(1000);
@@ -52,12 +46,17 @@ void loop() {
   }
 
 //  ///////// DOOR TESTING ////////////////
-//  m0.openDoor(3);
-//  printDoorsState(); Serial.println(' ');
-//  delay(200);
-//  m0.closeDoor(3);
-//  printDoorsState(); Serial.println(' ');
-//  delay(200);
+//  m0.setPath('r');
+//  m0.printDoorsStates(); Serial.println(' ');
+//  delay(1000);
+//  
+//  m0.setPath('c');
+//  m0.printDoorsStates(); Serial.println(' ');
+//  delay(1000);
+//
+//  m0.setPath('l');
+//  m0.printDoorsStates(); Serial.println(' ');
+//  delay(1000);
   
 }
 
@@ -66,24 +65,6 @@ void loop() {
 void testSyringePump(SyringePump syringePump, float mL, int timeDelay) {
   syringePump.dispenseMilliliters(mL);
   delay(timeDelay);
-}
-
-void testSensors() {
-  // Comment out lines with unwanted values -> Fewer values will make code run faster
-  printSensorsVals();
-//  printSensorsThresh();
-  printSensorsValIsPastThresh();
-  printSensorsValWasPastThresh();
-  printSensorsIsFall();
-  printSensorsIsRise();
-  Serial.println(' ');
-}
-
-void testDoors(int openDelay, int closeDelay) {
-  for(int i = 0; i < NUM_MAIN_DOORS; i++) m0.openDoor(i);
-  delay(openDelay);
-  for(int i = 0; i < NUM_MAIN_DOORS; i++) m0.closeDoor(i);
-  delay(closeDelay);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -102,68 +83,6 @@ void slavePracticeProtocol() {
   m0.interpretCommands(commands);
 }
 
-void printSensorsVals() {
-  Serial.print("sVal:");
-  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(m0.getSensorVal(i));
-    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
-    else Serial.print(',');
-  }
-}
-
-void printSensorsValIsPastThresh() {
-  Serial.print("isPast:");
-  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(m0.isSensorPastThresh(i));
-    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
-    else Serial.print(',');
-  }
-}
-
-void printSensorsValWasPastThresh() {
-  Serial.print("wasPast:");
-  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(m0.wasSensorPastThresh(i));
-    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
-    else Serial.print(',');
-  }
-}
-
-void printSensorsIsFall() {
-  Serial.print("isFall:");
-  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(m0.isSensorFall(i));
-    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
-    else Serial.print(',');
-  }
-}
-
-void printSensorsIsRise() {
-  Serial.print("isRise:");
-  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(m0.isSensorRise(i));
-    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
-    else Serial.print(',');
-  }
-}
-
-void printSensorsThresh(){
-  Serial.print("sThresh:");
-  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(m0.getSensorThresh(i));
-    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
-    else Serial.print(',');
-  }
-}
-
-void printDoorsState() {
-  Serial.print("dState:");
-  for(int i = 0; i < NUM_MAIN_DOORS; i++){
-    Serial.print(m0.isDoorOpen(i));
-    if(i == NUM_MAIN_DOORS - 1) Serial.print(" - ");
-    else Serial.print(',');
-  }
-}
 
 void moveSyringePump(SyringePump syringePump, bool isDirUp) {
   if (isDirUp)

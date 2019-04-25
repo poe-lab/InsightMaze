@@ -53,6 +53,8 @@ void Module::moduleSetup(){
     if(idValIn >= ID_VALS_OUT[i] - 4 * ID_RES && idValIn <= ID_VALS_OUT[i] + ID_RES)
       m_id = IDS[i];
   }
+
+  Serial.begin(9600);
 }
 
 void Module::openDoor(int doorID){
@@ -65,6 +67,55 @@ void Module::closeDoor(int doorID){
 
 bool Module::isDoorOpen(int doorID){
   return (m_doors[doorID]->isOpen());
+}
+
+void Module::openAllDoors(){
+  for(int i = 0; i < NUM_MAIN_DOORS; i++) openDoor(i);
+}
+
+void Module::closeAllDoors(){
+  for(int i = 0; i < NUM_MAIN_DOORS; i++) closeDoor(i);
+}
+    
+void Module::testDoors(int closeTime, int openTime){
+  closeAllDoors();
+  delay(closeTime);
+  openAllDoors();
+  delay(openTime);
+}
+
+void Module::printDoorsStates() {
+  Serial.print("dState:");
+  for(int i = 0; i < NUM_MAIN_DOORS; i++){
+    Serial.print(isDoorOpen(i));
+    if(i == NUM_MAIN_DOORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void Module::setPath(char path){
+  switch (path){
+    case 'l':
+      for(int i = 0; i < NUM_MAIN_DOORS; i++){
+        if(i == 0 || i == 3) openDoor(i);
+        else closeDoor(i);
+      }
+      break;
+
+    case 'c':
+      for(int i = 0; i < NUM_MAIN_DOORS; i++){
+        if(i == 1 || i == 4) openDoor(i);
+        else closeDoor(i);
+      }
+      break;
+
+    case 'r':
+      for(int i = 0; i < NUM_MAIN_DOORS; i++){
+        if(i == 2 || i == 5) openDoor(i);
+        else closeDoor(i);
+      }
+      break;
+  }
 }
 
 int Module::getSensorVal(int sensorID){
@@ -95,6 +146,70 @@ bool Module::isSensorPastThresh(int sensorID){
 
 bool Module::wasSensorPastThresh(int sensorID){
   return (m_sensors[sensorID]->wasPastThresh());
+}
+
+void Module::printSensorsVals() {
+  Serial.print("sVal:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(getSensorVal(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void Module::printSensorsValIsPastThresh() {
+  Serial.print("isPast:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(isSensorPastThresh(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void Module::printSensorsValWasPastThresh() {
+  Serial.print("wasPast:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(wasSensorPastThresh(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void Module::printSensorsIsFall() {
+  Serial.print("isFall:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(isSensorFall(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void Module::printSensorsIsRise() {
+  Serial.print("isRise:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(isSensorRise(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void Module::printSensorsThresh(){
+  Serial.print("sThresh:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(getSensorThresh(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void Module::testSensors(int values) {
+  if(bitRead(values, 0)) printSensorsVals();
+  if(bitRead(values, 1)) printSensorsThresh();
+  if(bitRead(values, 2)) printSensorsValIsPastThresh();
+  if(bitRead(values, 3)) printSensorsValWasPastThresh();
+  if(bitRead(values, 4)) printSensorsIsFall();
+  if(bitRead(values, 5)) printSensorsIsRise();
+  Serial.println(' ');
 }
 
 char Module::id(){
