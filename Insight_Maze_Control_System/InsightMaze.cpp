@@ -122,7 +122,7 @@ int Module::getSensorVal(int sensorID){
   return (m_sensors[sensorID]->getSensorVal());
 }
 
-void Module::checkSensors(){
+void Module::updateSensors(){
   for(int i = 0; i < NUM_MAIN_SENSORS; i++){
     m_sensors[i]->sensorUpdate();
   }
@@ -140,11 +140,11 @@ int Module::getSensorThresh(int sensorID){
   return (m_sensors[sensorID]->getThreshold());
 }
 
-bool Module::isSensorPastThresh(int sensorID){
+bool Module::isObjInSensorView(int sensorID){
   return (m_sensors[sensorID]->isPastThresh());
 }
 
-bool Module::wasSensorPastThresh(int sensorID){
+bool Module::wasObjInSensorView(int sensorID){
   return (m_sensors[sensorID]->wasPastThresh());
 }
 
@@ -157,19 +157,19 @@ void Module::printSensorsVals() {
   }
 }
 
-void Module::printSensorsValIsPastThresh() {
-  Serial.print("isPast:");
+void Module::printIsObjSensorView() {
+  Serial.print("isObj:");
   for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(isSensorPastThresh(i));
+    Serial.print(isObjInSensorView(i));
     if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
 }
 
-void Module::printSensorsValWasPastThresh() {
-  Serial.print("wasPast:");
+void Module::printWasObjSensorView() {
+  Serial.print("wasObj:");
   for(int i = 0; i < NUM_MAIN_SENSORS; i++){
-    Serial.print(wasSensorPastThresh(i));
+    Serial.print(wasObjInSensorView(i));
     if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
@@ -205,8 +205,8 @@ void Module::printSensorsThresh(){
 void Module::testSensors(int values) {
   if(bitRead(values, 0)) printSensorsVals();
   if(bitRead(values, 1)) printSensorsThresh();
-  if(bitRead(values, 2)) printSensorsValIsPastThresh();
-  if(bitRead(values, 3)) printSensorsValWasPastThresh();
+  if(bitRead(values, 2)) printIsObjSensorView();
+  if(bitRead(values, 3)) printWasObjSensorView();
   if(bitRead(values, 4)) printSensorsIsFall();
   if(bitRead(values, 5)) printSensorsIsRise();
   Serial.println(' ');

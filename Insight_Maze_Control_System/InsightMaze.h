@@ -31,15 +31,15 @@ class Module {
     void setPath(char path);                      // Configures the doors to a specific path of the maze; takes arguments of the following: 'l'->left, 'r'->right, 'c'->center
     
     int getSensorVal(int sensorID);               // Returns the sensor value of the sensor with specific sensor ID
-    void checkSensors();                          // Must be called at the beginning of void loop() to update the sensors values and states
+    void updateSensors();                          // Must be called at the beginning of void loop() to update the sensors values and states
     bool isSensorFall(int sensorID);              // Returns whether or not an object left the view of the sensor 
     bool isSensorRise(int sensorID);              // Returns whether or not an object entered the view of the sensor 
     int getSensorThresh(int sensorID);            // Returns the threshold value of the sensor with the specific sensor ID
-    bool isSensorPastThresh(int sensorID);        // Returns whether or not an object is in the view of the sensor
-    bool wasSensorPastThresh(int sensorID);       // Returns whether or not an object was just in the view of the sensor
+    bool isObjInSensorView(int sensorID);        // Returns whether or not an object is in the view of the sensor
+    bool wasObjInSensorView(int sensorID);       // Returns whether or not an object was just in the view of the sensor
     void printSensorsVals();                      // Prints all the values of the sensors of the module
-    void printSensorsValIsPastThresh();           // Prints whether an object is in view of the all sensors of the module 
-    void printSensorsValWasPastThresh();          // Prints whether an object was just in view of the all sensors of the module 
+    void printIsObjSensorView();           // Prints whether an object is in view of the all sensors of the module 
+    void printWasObjSensorView();          // Prints whether an object was just in view of the all sensors of the module 
     void printSensorsIsFall();                    // Prints whether an object just left the view of the all sensors of the module 
     void printSensorsIsRise();                    // Prints whether an object just entered the view of the all sensors of the module 
     void printSensorsThresh();                    // Prints the thresholds of all the sensors of the module

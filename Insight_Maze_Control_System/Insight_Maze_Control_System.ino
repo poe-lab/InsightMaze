@@ -30,6 +30,11 @@ void setup() {
 void loop() {
 
   ////////////// ROCKELLE'S CODE ///////////////////
+  // Code for Start Module
+  // set path to right
+  // close doors on sensor trigger
+
+  // Code for a Module
 
 
 
@@ -46,18 +51,18 @@ void loop() {
   ////////////////////GREG's CODE/////////////////////
 
 
-//  ///////// SENSOR TESTING /////////////
-//  m.checkSensors();
-//  m.testSensors(0b111111);
-//  
-//  if(m.isSensorRise(0)){
-//    Serial.println("Rising Edge Detected.");
-//    delay(1000);
-//  }
-//  if(m.isSensorFall(0)){
-//    Serial.println("Falling Edge Detected.");
-//    delay(1000);
-//  }
+  ///////// SENSOR TESTING /////////////
+  m.updateSensors();
+  m.testSensors(0b111111);
+  
+  if(m.isSensorRise(0)){
+    Serial.println("Rising Edge Detected.");
+    delay(1000);
+  }
+  if(m.isSensorFall(0)){
+    Serial.println("Falling Edge Detected.");
+    delay(1000);
+  }
 
 //  ///////// DOOR TESTING ////////////////
 //  m.setPath('r');
@@ -73,7 +78,7 @@ void loop() {
 //  delay(1000);
 
 //  /////////// INTEGRATED TESTING ////////////
-//  m.checkSensors();
+//  m.updateSensors();
 //  
 //  if(needsToSetPath){
 //    m.setPath('r');
