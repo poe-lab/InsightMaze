@@ -27,7 +27,6 @@ void setup() {
 
   m0.moduleSetup();
   m0.testDoors(1500, 1500);
-  
 }
 
 void loop() {
@@ -57,18 +56,22 @@ void loop() {
 //  m0.setPath('l');
 //  m0.printDoorsStates(); Serial.println(' ');
 //  delay(1000);
-  
 }
 
-/////////////////////// TESTING COMPONENTS CODE //////////////////////////
+/////////////////////// SYRINGE PUMP CODE //////////////////////////
 
 void testSyringePump(SyringePump syringePump, float mL, int timeDelay) {
   syringePump.dispenseMilliliters(mL);
   delay(timeDelay);
 }
 
-//////////////////////////////////////////////////////////////////////////
+void moveSyringePump(SyringePump syringePump, bool isDirUp) {
+  if (isDirUp) syringePump.dirUp();
+  else syringePump.dirDown();
 
+  syringePump.stepMotor();
+}
+/////////////////// COMMUNICATION CODE ///////////////////////////////////////////////////////
 void slavePracticeSetup() {
   m0.moduleSetup();
   Serial.begin(115200);
@@ -81,14 +84,4 @@ void slavePracticeProtocol() {
   Serial.print(commands); Serial.print(" ");
   Serial.println(commands, BIN);
   m0.interpretCommands(commands);
-}
-
-
-void moveSyringePump(SyringePump syringePump, bool isDirUp) {
-  if (isDirUp)
-    syringePump.dirUp();
-  else
-    syringePump.dirDown();
-
-  syringePump.stepMotor();
 }
