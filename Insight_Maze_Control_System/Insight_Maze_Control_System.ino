@@ -20,7 +20,7 @@ Door d5(PIN_DOOR_5, POS_D5[0], POS_D5[1]);
 Module m(PIN_ID, s0, s1, s2, s3, d0, d1, d2, d3, d4, d5);
 EndModule e(PIN_ID, s0, s1, s2, d0, d1, d2, d3, d4, d5, r0, r1, r2);
 
-bool needsToSetPath = true;
+bool needsToSetPath = false;
 
 void setup() {
 //  r0.syringeSetup();
