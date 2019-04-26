@@ -32,6 +32,9 @@ Module::Module(int pinID, Sensor s0, Sensor s1, Sensor s2, Sensor s3, Door d0, D
 }
 
 void Module::moduleSetup(){
+  Serial.begin(9600);
+  Serial.println("Setting Up Module...");
+  
   // Calls setup fuinction for all sensors
   for(int i = 0; i < NUM_MAIN_SENSORS; i++)
     m_sensors[i]->sensorSetup();
@@ -41,6 +44,8 @@ void Module::moduleSetup(){
     m_doors[i]->doorSetup();
   
   m_needsToConfig = true;
+
+  Serial.println("Setting Up Module...");
 
   // Determines ID char of Module
   int idValIn = analogRead(m_pinID);
@@ -54,7 +59,9 @@ void Module::moduleSetup(){
       m_id = IDS[i];
   }
 
-  Serial.begin(9600);
+  Serial.println("Testing Doors...");
+
+  testDoors(1500, 1500);
 }
 
 void Module::openDoor(int doorID){

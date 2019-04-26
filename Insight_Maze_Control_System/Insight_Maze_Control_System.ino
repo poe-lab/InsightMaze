@@ -23,7 +23,6 @@ bool needsToSetPath = false;
 void setup() {
   
   m.moduleSetup();
-  m.testDoors(1500, 1500);
 
 }
 
