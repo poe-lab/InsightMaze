@@ -20,9 +20,15 @@ EndModule e(PIN_ID, s0, s1, s2, d0, d1, d2, d3, d4, d5, r0, r1, r2);
 
 bool needsToSetPath = false;
 
+int pinsLEDs[] = {13, 12, 11, 10, 9, 8};
+
 void setup() {
   
   m.moduleSetup();
+
+  for(int i = 0; i < sizeof(pinsLEDs)/sizeof(pinsLEDs[0]); i++){
+    pinMode(pinsLEDs[i], OUTPUT);
+  }
 
 }
 
@@ -50,18 +56,18 @@ void loop() {
   ////////////////////GREG's CODE/////////////////////
 
 
-  ///////// SENSOR TESTING /////////////
-  m.updateSensors();
-  m.testSensors(0b111111);
-  
-  if(m.isSensorRise(0)){
-    Serial.println("Rising Edge Detected.");
-    delay(1000);
-  }
-  if(m.isSensorFall(0)){
-    Serial.println("Falling Edge Detected.");
-    delay(1000);
-  }
+//  ///////// SENSOR TESTING /////////////
+//  m.updateSensors();
+//  m.testSensors(0b000101);
+//  
+//  if(m.isSensorRise(0)){
+//    Serial.println("Rising Edge Detected.");
+//    delay(1000);
+//  }
+//  if(m.isSensorFall(0)){
+//    Serial.println("Falling Edge Detected.");
+//    delay(1000);
+//  }
 
 //  ///////// DOOR TESTING ////////////////
 //  m.setPath('r');
@@ -90,10 +96,26 @@ void loop() {
 //  }
 //  m.printDoorsStates(); Serial.println(' ');
 
+///////////// COMMUNICATION TESTING /////////////
+
+  m.setPath('r');
+  m.printDoorsStates(); Serial.println(' ');
+  doorsAsLEDs(pinsLEDs);
+  delay(1000);
+
+  m.setPath('l');
+  m.printDoorsStates(); Serial.println(' ');
+  doorsAsLEDs(pinsLEDs);
+  delay(1000);
+
+  m.setPath('c');
+  m.printDoorsStates(); Serial.println(' ');
+  doorsAsLEDs(pinsLEDs);
+  delay(1000);
+
 
 
 }
-
 
 /////////////////////// SYRINGE PUMP CODE //////////////////////////
 
@@ -109,6 +131,14 @@ void moveSyringePump(SyringePump syringePump, bool isDirUp) {
   syringePump.stepMotor();
 }
 /////////////////// COMMUNICATION CODE ///////////////////////////////////////////////////////
+
+void doorsAsLEDs(int leds[]){
+  for(int i = 0; i < NUM_MAIN_DOORS; i++){
+    if(m.isDoorOpen(i)) digitalWrite(leds[i], HIGH);
+    else digitalWrite(leds[i], LOW);
+  }
+}
+
 void slavePracticeSetup() {
   m.moduleSetup();
   Serial.begin(115200);
