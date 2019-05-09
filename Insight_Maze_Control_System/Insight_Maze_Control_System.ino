@@ -20,7 +20,7 @@ EndModule e(PIN_ID, s0, s1, s2, d0, d1, d2, d3, d4, d5, r0, r1, r2);
 
 bool needsToSetPath = false;
 
-int pinsLEDs[] = {13, 12, 11, 10, 9, 8};
+int pinsLEDs[] = {13, 12, 8, 7, 4, 2};
 
 void setup() {
   
@@ -28,6 +28,7 @@ void setup() {
 
   for(int i = 0; i < sizeof(pinsLEDs)/sizeof(pinsLEDs[0]); i++){
     pinMode(pinsLEDs[i], OUTPUT);
+    digitalWrite(pinsLEDs[i], LOW);
   }
 
 }
@@ -101,7 +102,7 @@ void loop() {
   m.setPath('r');
   m.printDoorsStates(); Serial.println(' ');
   doorsAsLEDs(pinsLEDs);
-  delay(1000);
+  delay(500);
 
   m.setPath('l');
   m.printDoorsStates(); Serial.println(' ');
@@ -111,7 +112,7 @@ void loop() {
   m.setPath('c');
   m.printDoorsStates(); Serial.println(' ');
   doorsAsLEDs(pinsLEDs);
-  delay(1000);
+  delay(2000);
 
 
 
