@@ -15,10 +15,12 @@ Master::Master(int pinsID[], int pinsLEDs[], int pinBtn, int pinCS, LiquidCrysta
 
 void Master::masterSetup(){
   m_lcd->init();                      // initialize the lcd 
-  m_lcd->init();
+
   // Print a message to the LCD.
   m_lcd->backlight();
   printToLCD(3, "Welcome to", 2, "Insight Maze");
+  pinMode(44, OUTPUT);
+  digitalWrite(44, HIGH);
 
   delay(2000);
   
@@ -34,11 +36,13 @@ void Master::masterSetup(){
 
   pinMode(m_pinBtn, INPUT_PULLUP);
 
-  Serial.begin(9600);
+  Serial.begin(2400);
   Serial1.begin(9600);
 
   Serial.print("Initializing SD card...");
   printToLCD(3, "Initializing", 2, "SD card...");
+
+  
 
   // see if the card is present and can be initialized:
   if (!SD.begin(m_pinCS)) {
@@ -46,49 +50,11 @@ void Master::masterSetup(){
     // don't do anything more:
     while (1);
   }
+  
+  
   Serial.println("card initialized.");
   printToLCD(1, "SD Initialized", 0, " ");
 
-}
-
-void Master::turnLED(char color){
-  switch(color){
-    case 'r':
-      digitalWrite(*m_pinsLEDs, HIGH);
-      digitalWrite(*(m_pinsLEDs + 1), LOW);
-      digitalWrite(*(m_pinsLEDs + 2), LOW);
-      break;
-
-    case 'g':
-      digitalWrite(*m_pinsLEDs, LOW);
-      digitalWrite(*(m_pinsLEDs + 1), HIGH);
-      digitalWrite(*(m_pinsLEDs + 2), LOW);
-      break;
-
-    case 'b':
-      digitalWrite(*m_pinsLEDs, LOW);
-      digitalWrite(*(m_pinsLEDs + 1), LOW);
-      digitalWrite(*(m_pinsLEDs + 2), HIGH);
-      break;
-
-    case 'y':
-      digitalWrite(*m_pinsLEDs, HIGH);
-      digitalWrite(*(m_pinsLEDs + 1), HIGH);
-      digitalWrite(*(m_pinsLEDs + 2), LOW);
-      break;
-
-    case 'c':
-      digitalWrite(*m_pinsLEDs, LOW);
-      digitalWrite(*(m_pinsLEDs + 1), HIGH);
-      digitalWrite(*(m_pinsLEDs + 2), HIGH);
-      break;
-
-    case 'm':
-      digitalWrite(*m_pinsLEDs, HIGH);
-      digitalWrite(*(m_pinsLEDs + 1), LOW);
-      digitalWrite(*(m_pinsLEDs + 2), HIGH);
-      break;
-  }
 }
 
 void Master::setCommands(int commands[]){
@@ -106,7 +72,7 @@ void Master::transmitCommands(){
     transmission += *(m_commands + i);
   }
 
-  Serial1.println(transmission);
+  Serial.println(transmission);
 }
 
 void Master::updateBtnVals(){
@@ -160,6 +126,8 @@ void Master::getPathsFromSD(){
       }
     }
   }
+
+  pathFile.close();
 }
 
 void Master::printPaths(){
@@ -178,4 +146,27 @@ void Master::printToLCD(int startPos0, String line0, int startPos1, String line1
   m_lcd->print(line0);
   m_lcd->setCursor(startPos1, 1);
   m_lcd->print(line1);
+}
+
+int* Master::splitPathCommands(String paths){
+  char* dir;
+  dir = paths.c_str();
+  int* pathCommands;
+
+  for(int i = 0; i < NUM_IDS; i++){
+    switch(*(dir + i)){
+      case 'l':
+        *(pathCommands + i) = 0b00000010;
+        break;
+      case 'c':
+        *(pathCommands + i) = 0b00000001;
+        break;
+      case 'r':
+        *(pathCommands + i) = 0b00000011;
+        break;
+    }
+  }
+
+  return pathCommands;
+  
 }

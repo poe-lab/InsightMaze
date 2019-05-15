@@ -27,6 +27,7 @@ class Master{
     void printPaths();
     String getPath(int pathNum);
     void printToLCD(int startPos0, String line0, int startPos1, String line1);
+    int* splitPathCommands(String paths);
 
   private:
     int *m_pinsModules;
@@ -42,7 +43,5 @@ class Master{
     String m_paths[MAX_NUM_PATHS];
 
     int *m_commands;
-
-    void turnLED(char color);
     
 };
