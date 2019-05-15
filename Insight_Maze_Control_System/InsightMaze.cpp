@@ -49,13 +49,12 @@ void Module::moduleSetup(){
   Serial.println("Deteriming Module ID...");
   // Determines ID char of Module
   int idValIn = analogRead(m_pinID);
-  idValIn = map(idValIn, 0, 1023, 0, 255);
   // Serial.print(idValIn); Serial.print(' ');
 
   char id = 'e';
 
   for(int i = 0; i < NUM_IDS; i++) {
-    if(idValIn >= ID_VALS_OUT[i] - 4 * ID_RES && idValIn <= ID_VALS_OUT[i] + ID_RES)
+    if(idValIn >= ID_VALS_IN[i] - ID_RES && idValIn <= ID_VALS_IN[i] + ID_RES)
       m_id = IDS[i];
   }
 

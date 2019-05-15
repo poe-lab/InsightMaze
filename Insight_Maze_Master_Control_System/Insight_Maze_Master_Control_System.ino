@@ -1,20 +1,11 @@
+#include "InsightMazeMaster.h"
+#include "globals.h"
 
-const int NUM_MAIN_SENSORS = 4;
-const int NUM_MAIN_DOORS = 6;
-const int NUM_START_SENSORS = 4;
-const int NUM_START_DOORS = 6;
-const int NUM_END_SENSORS = 3;
-const int NUM_END_DOORS = 6;
-const int NUM_END_SYRINGE_PUMPS = 3;
-
-const int ID_VALS_OUT[] = {0, 51, 102, 153, 204, 255};
-const int ID_RES = 10;
-const int NUM_IDS = 6;
-const char IDS[] = {'s', 'a', 'b', 'c', 'd', 'r'};
-
+//Master ma(PINS_ID_OUT[0], PINS_ID_OUT[1], PINS_ID_OUT[2], PINS_ID_OUT[3], PINS_ID_OUT[4], PINS_ID_OUT[5]);
+Master ma(PINS_ID_OUT, PINS_LED, PIN_BTN);
 void setup() {
   // put your setup code here, to run once:
-
+  ma.masterSetup();
 }
 
 void loop() {

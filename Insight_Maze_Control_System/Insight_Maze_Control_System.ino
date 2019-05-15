@@ -99,21 +99,18 @@ void loop() {
 
 ///////////// COMMUNICATION TESTING /////////////
 
-  m.setPath('r');
-  m.printDoorsStates(); Serial.println(' ');
-  doorsAsLEDs(pinsLEDs);
-  delay(500);
+  Serial.print(analogRead(A7)); Serial.print(' ');
+  Serial.println(m.id());
+  m.closeAllDoors();
 
-  m.setPath('l');
-  m.printDoorsStates(); Serial.println(' ');
-  doorsAsLEDs(pinsLEDs);
-  delay(1000);
+  if(m.id() == 's') m.openDoor(0);
+  if(m.id() == 'a') m.openDoor(1);
+  if(m.id() == 'b') m.openDoor(2);
+  if(m.id() == 'c') m.openDoor(3);
+  if(m.id() == 'd') m.openDoor(4);
+  if(m.id() == 'r') m.openDoor(5);
 
-  m.setPath('c');
-  m.printDoorsStates(); Serial.println(' ');
   doorsAsLEDs(pinsLEDs);
-  delay(2000);
-
 
 
 }

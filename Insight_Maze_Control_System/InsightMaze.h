@@ -12,7 +12,8 @@ const int NUM_END_DOORS = 6;
 const int NUM_END_SYRINGE_PUMPS = 3;
 
 const int ID_VALS_OUT[] = {0, 51, 102, 153, 204, 255};
-const int ID_RES = 10;
+const int ID_VALS_IN[] = {0, 205, 409, 614, 818, 1023};
+const int ID_RES = 60;
 const int NUM_IDS = 6;
 const char IDS[] = {'s', 'a', 'b', 'c', 'd', 'r'};
 
