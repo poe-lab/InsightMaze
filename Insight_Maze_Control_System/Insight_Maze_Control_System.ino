@@ -23,10 +23,10 @@ bool needsToSetPath = false;
 int pinsLEDs[] = {13, 12, 8, 7, 4, 2};
 
 void setup() {
-  
+
   m.moduleSetup();
 
-  for(int i = 0; i < sizeof(pinsLEDs)/sizeof(pinsLEDs[0]); i++){
+  for (int i = 0; i < sizeof(pinsLEDs) / sizeof(pinsLEDs[0]); i++) {
     pinMode(pinsLEDs[i], OUTPUT);
     digitalWrite(pinsLEDs[i], LOW);
   }
@@ -57,60 +57,49 @@ void loop() {
   ////////////////////GREG's CODE/////////////////////
 
 
-//  ///////// SENSOR TESTING /////////////
-//  m.updateSensors();
-//  m.testSensors(0b000101);
-//  
-//  if(m.isSensorRise(0)){
-//    Serial.println("Rising Edge Detected.");
-//    delay(1000);
-//  }
-//  if(m.isSensorFall(0)){
-//    Serial.println("Falling Edge Detected.");
-//    delay(1000);
-//  }
+  //  ///////// SENSOR TESTING /////////////
+  //  m.updateSensors();
+  //  m.testSensors(0b000101);
+  //
+  //  if(m.isSensorRise(0)){
+  //    Serial.println("Rising Edge Detected.");
+  //    delay(1000);
+  //  }
+  //  if(m.isSensorFall(0)){
+  //    Serial.println("Falling Edge Detected.");
+  //    delay(1000);
+  //  }
 
-//  ///////// DOOR TESTING ////////////////
-//  m.setPath('r');
-//  m.printDoorsStates(); Serial.println(' ');
-//  delay(1000);
-//  
-//  m.setPath('c');
-//  m.printDoorsStates(); Serial.println(' ');
-//  delay(1000);
-//
-//  m.setPath('l');
-//  m.printDoorsStates(); Serial.println(' ');
-//  delay(1000);
+  //  ///////// DOOR TESTING ////////////////
+  //  m.setPath('r');
+  //  m.printDoorsStates(); Serial.println(' ');
+  //  delay(1000);
+  //
+  //  m.setPath('c');
+  //  m.printDoorsStates(); Serial.println(' ');
+  //  delay(1000);
+  //
+  //  m.setPath('l');
+  //  m.printDoorsStates(); Serial.println(' ');
+  //  delay(1000);
 
-//  /////////// INTEGRATED TESTING ////////////
-//  m.updateSensors();
-//  
-//  if(needsToSetPath){
-//    m.setPath('r');
-//    needsToSetPath = false;
-//  }
-//  else{
-//    if(m.isSensorFall(0)){
-//      m.closeDoor(2);
-//    }
-//  }
-//  m.printDoorsStates(); Serial.println(' ');
+  //  /////////// INTEGRATED TESTING ////////////
+  //  m.updateSensors();
+  //
+  //  if(needsToSetPath){
+  //    m.setPath('r');
+  //    needsToSetPath = false;
+  //  }
+  //  else{
+  //    if(m.isSensorFall(0)){
+  //      m.closeDoor(2);
+  //    }
+  //  }
+  //  m.printDoorsStates(); Serial.println(' ');
 
-///////////// COMMUNICATION TESTING /////////////
+  ///////////// COMMUNICATION TESTING /////////////
 
-  Serial.print(analogRead(A7)); Serial.print(' ');
-  Serial.println(m.id());
-  m.closeAllDoors();
-
-  if(m.id() == 's') m.openDoor(0);
-  if(m.id() == 'a') m.openDoor(1);
-  if(m.id() == 'b') m.openDoor(2);
-  if(m.id() == 'c') m.openDoor(3);
-  if(m.id() == 'd') m.openDoor(4);
-  if(m.id() == 'r') m.openDoor(5);
-
-  doorsAsLEDs(pinsLEDs);
+  slavePracticeProtocol();
 
 
 }
@@ -130,23 +119,32 @@ void moveSyringePump(SyringePump syringePump, bool isDirUp) {
 }
 /////////////////// COMMUNICATION CODE ///////////////////////////////////////////////////////
 
-void doorsAsLEDs(int leds[]){
-  for(int i = 0; i < NUM_MAIN_DOORS; i++){
-    if(m.isDoorOpen(i)) digitalWrite(leds[i], HIGH);
+void doorsAsLEDs(int leds[]) {
+  for (int i = 0; i < NUM_MAIN_DOORS; i++) {
+    if (m.isDoorOpen(i)) digitalWrite(leds[i], HIGH);
     else digitalWrite(leds[i], LOW);
   }
 }
 
-void slavePracticeSetup() {
-  m.moduleSetup();
-  Serial.begin(115200);
-}
-
 void slavePracticeProtocol() {
   unsigned int commands = m.receiveCommands();
-  Serial.print(millis()); Serial.print(" ");
-  Serial.print(m.id()); Serial.print(" ");
-  Serial.print(commands); Serial.print(" ");
-  Serial.println(commands, BIN);
-  m.interpretCommands(commands);
+
+  if (commands != 0) {
+    Serial.print(m.id()); Serial.print(" ");
+    Serial.print(commands); Serial.print(" ");
+    Serial.print(commands, BIN);
+    for (int i = 0; i < NUM_MAIN_DOORS; i++) {
+      if (bitRead(commands, i)) m.openDoor(i);
+      else m.closeDoor(i);
+    } 
+//    int dir = (commands & 0b00000011);
+//
+//    switch(dir){
+//      case 
+//    }
+    
+    Serial.println(' ');
+  }
+  
+  doorsAsLEDs(pinsLEDs);
 }
