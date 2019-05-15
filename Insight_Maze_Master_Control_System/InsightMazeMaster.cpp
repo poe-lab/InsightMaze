@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include "InsightMazeMaster.h"
 
-Master::Master(int pinsID[], int pinsLEDs[], int pinBtn, int pinCS){
+Master::Master(int pinsID[], int pinsLEDs[], int pinBtn, int pinCS, LiquidCrystal_I2C lcd){
   m_pinsModules = pinsID;
   m_pinsLEDs = pinsLEDs;
   m_pinBtn = pinBtn;
   m_pinCS = pinCS;
+  m_lcd = &lcd;
 
   m_btnVal = HIGH;
   m_btnPastVal = HIGH;
@@ -13,6 +14,14 @@ Master::Master(int pinsID[], int pinsLEDs[], int pinBtn, int pinCS){
 }
 
 void Master::masterSetup(){
+  m_lcd->init();                      // initialize the lcd 
+  m_lcd->init();
+  // Print a message to the LCD.
+  m_lcd->backlight();
+  printToLCD(3, "Welcome to", 2, "Insight Maze");
+
+  delay(2000);
+  
   for(int i = 0; i < NUM_IDS; i++){
     pinMode(*(m_pinsModules + i), OUTPUT);
     analogWrite(*(m_pinsModules + i), ID_VALS_OUT[i]);
@@ -29,6 +38,7 @@ void Master::masterSetup(){
   Serial1.begin(9600);
 
   Serial.print("Initializing SD card...");
+  printToLCD(3, "Initializing", 2, "SD card...");
 
   // see if the card is present and can be initialized:
   if (!SD.begin(m_pinCS)) {
@@ -37,6 +47,7 @@ void Master::masterSetup(){
     while (1);
   }
   Serial.println("card initialized.");
+  printToLCD(1, "SD Initialized", 0, " ");
 
 }
 
@@ -159,4 +170,12 @@ void Master::printPaths(){
 
 String Master::getPath(int pathNum){
   return m_paths[pathNum];
+}
+
+void Master::printToLCD(int startPos0, String line0, int startPos1, String line1){
+  m_lcd->clear();
+  m_lcd->setCursor(startPos0, 0);
+  m_lcd->print(line0);
+  m_lcd->setCursor(startPos1, 1);
+  m_lcd->print(line1);
 }
