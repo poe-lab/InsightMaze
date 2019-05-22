@@ -36,7 +36,7 @@ void Master::masterSetup(){
 
   pinMode(m_pinBtn, INPUT_PULLUP);
 
-  Serial.begin(2400);
+  Serial.begin(9600);
   Serial1.begin(9600);
 
   Serial.print("Initializing SD card...");
@@ -72,7 +72,7 @@ void Master::transmitCommands(){
     transmission += *(m_commands + i);
   }
 
-  Serial.println(transmission);
+  Serial1.println(transmission);
 }
 
 void Master::updateBtnVals(){

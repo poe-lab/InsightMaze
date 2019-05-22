@@ -30,10 +30,10 @@ void loop() {
     switch (ma.state()) {
       case 0:
         Serial.println("Reading SD Card");
-//        ma.printToLCD(0, "Reading SD Card", 0, " ");
+        ma.printToLCD(0, "Reading SD Card", 0, " ");
         ma.getPathsFromSD();
         Serial.println("Done...waiting for button press.");
-//        ma.printToLCD(0, "Done", 0, " ");
+        ma.printToLCD(0, "Done", 0, " ");
         break;
       case 1:
         ma.printPaths();
