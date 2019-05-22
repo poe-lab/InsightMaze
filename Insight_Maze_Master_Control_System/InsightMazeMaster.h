@@ -13,6 +13,10 @@ const int MAX_NUM_PATHS = 60;
 
 const int DO_NOTHING[] = {0, 0, 0, 0, 0, 0};
 
+const int RIGHT = 1;
+const int LEFT = 2;
+const int CENTER = 3;
+
 class Master{
   public:
     Master(int pinsID[], int pinsLEDs[], int pinBtn, int pinCS, LiquidCrystal_I2C lcd);

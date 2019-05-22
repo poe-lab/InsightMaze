@@ -133,18 +133,25 @@ void slavePracticeProtocol() {
     Serial.print(m.id()); Serial.print(" ");
     Serial.print(commands); Serial.print(" ");
     Serial.print(commands, BIN);
-    for (int i = 0; i < NUM_MAIN_DOORS; i++) {
-      if (bitRead(commands, i)) m.openDoor(i);
-      else m.closeDoor(i);
-    } 
-//    int dir = (commands & 0b00000011);
-//
-//    switch(dir){
-//      case 
-//    }
-    
-    Serial.println(' ');
+
+    if ((commands & 0b11000000) == 0b10000000) {
+      int dir = (commands & 0b00000011);
+
+      switch (dir) {
+        case LEFT:
+          m.setPath('l');
+          break;
+        case CENTER:
+          m.setPath('c');
+          break;
+        case RIGHT:
+          m.setPath('r');
+          break;
+      }
+
+      Serial.println(' ');
+    }
   }
-  
+
   doorsAsLEDs(pinsLEDs);
 }

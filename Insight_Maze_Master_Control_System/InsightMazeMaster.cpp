@@ -73,6 +73,7 @@ void Master::transmitCommands(){
   }
 
   Serial1.println(transmission);
+  if(transmission != "s000a000b000c000d000r000") Serial.println(transmission);
 }
 
 void Master::updateBtnVals(){
@@ -149,23 +150,28 @@ void Master::printToLCD(int startPos0, String line0, int startPos1, String line1
 }
 
 int* Master::splitPathCommands(String paths){
-  char* dir;
-  dir = paths.c_str();
+  Serial.print("Path: "); Serial.println(paths);
+  char dir[NUM_IDS - 1];
+  paths.toCharArray(dir, NUM_IDS - 1);
   int* pathCommands;
 
-  for(int i = 0; i < NUM_IDS; i++){
-    switch(*(dir + i)){
+  for(int i = 0; i < paths.length(); i++){
+    switch(dir[i]){
       case 'l':
-        *(pathCommands + i) = 0b00000010;
+        *(pathCommands + i) = 0b10000000 | LEFT;
         break;
       case 'c':
-        *(pathCommands + i) = 0b00000001;
+        *(pathCommands + i) = 0b10000000 | CENTER;
         break;
       case 'r':
-        *(pathCommands + i) = 0b00000011;
+        *(pathCommands + i) = 0b10000000 | RIGHT;
         break;
     }
+    Serial.println(*(pathCommands + i));
+    Serial.print("direction "); Serial.print(i); Serial.print(": ");
+    Serial.println(*(pathCommands + i));
   }
+  Serial.print("Returned val: "); Serial.println(*(pathCommands));
 
   return pathCommands;
   

@@ -17,6 +17,10 @@ const int ID_RES = 60;
 const int NUM_IDS = 6;
 const char IDS[] = {'s', 'a', 'b', 'c', 'd', 'r'};
 
+const int RIGHT = 1;
+const int LEFT = 2;
+const int CENTER = 3;
+
 class Module {
   public:
     Module(int pintID, Sensor s0, Sensor s1, Sensor s2, Sensor s3, Door d0, Door d1, Door d2, Door d3, Door d4, Door d5);
@@ -105,6 +109,8 @@ class EndModule {
     SyringePump m_r0;
     SyringePump m_r1;
     SyringePump m_r2;
+
+    int m_commands;
 
     bool m_needsToConfig;
 };
