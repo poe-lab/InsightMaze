@@ -1,5 +1,5 @@
-const int SYRINGE_STEP_DELAY = 500;
-const int WAIT_AFTER_PIPETTE = 10;
+#define SYRINGE_STEP_DELAY 500
+#define WAIT_AFTER_PIPETTE 10
 
 class SyringePump {
   public:
@@ -21,5 +21,3 @@ class SyringePump {
     float m_volume;     // current volume in pipette
     float m_maxVol;     // maximum volume able to be stored
 };
-
-

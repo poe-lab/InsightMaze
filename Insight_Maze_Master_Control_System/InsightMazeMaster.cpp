@@ -1,37 +1,22 @@
 #include <Arduino.h>
 #include "InsightMazeMaster.h"
 
-Master::Master(int pinsID[], int pinsLEDs[], int pinBtn, int pinCS, LiquidCrystal_I2C lcd){
+Master::Master(int pinsID[], int pinBtn, int pinCS) {
   m_pinsModules = pinsID;
-  m_pinsLEDs = pinsLEDs;
   m_pinBtn = pinBtn;
   m_pinCS = pinCS;
-  m_lcd = &lcd;
 
   m_btnVal = HIGH;
   m_btnPastVal = HIGH;
   m_btnCounter = 0;
+  m_pathNum = 0;
 }
 
-void Master::masterSetup(){
-  m_lcd->init();                      // initialize the lcd 
+void Master::masterSetup() {
 
-  // Print a message to the LCD.
-  m_lcd->backlight();
-  printToLCD(3, "Welcome to", 2, "Insight Maze");
-  pinMode(44, OUTPUT);
-  digitalWrite(44, HIGH);
-
-  delay(2000);
-  
-  for(int i = 0; i < NUM_IDS; i++){
+  for (int i = 0; i < NUM_IDS; i++) {
     pinMode(*(m_pinsModules + i), OUTPUT);
     analogWrite(*(m_pinsModules + i), ID_VALS_OUT[i]);
-  }
-
-  for(int i = 0; i < 3; i++){
-    pinMode(*(m_pinsLEDs + i), OUTPUT);
-    digitalWrite(*(m_pinsLEDs + i), LOW);
   }
 
   pinMode(m_pinBtn, INPUT_PULLUP);
@@ -40,9 +25,6 @@ void Master::masterSetup(){
   Serial1.begin(9600);
 
   Serial.print("Initializing SD card...");
-  printToLCD(3, "Initializing", 2, "SD card...");
-
-  
 
   // see if the card is present and can be initialized:
   if (!SD.begin(m_pinCS)) {
@@ -50,50 +32,48 @@ void Master::masterSetup(){
     // don't do anything more:
     while (1);
   }
-  
-  
-  Serial.println("card initialized.");
-  printToLCD(1, "SD Initialized", 0, " ");
 
+
+  Serial.println("card initialized.");
 }
 
-void Master::setCommands(int commands[]){
+void Master::setCommands(int commands[]) {
   m_commands = commands;
 }
 
-void Master::transmitCommands(){
+void Master::transmitCommands() {
   String transmission = "";
 
   for (int i = 0; i < NUM_IDS; i++) {
     transmission += IDS[i];
-    
-    if(*(m_commands + i) < 10) transmission += "00";
-    else if(*(m_commands + i) < 100) transmission += "0";
+
+    if (*(m_commands + i) < 10) transmission += "00";
+    else if (*(m_commands + i) < 100) transmission += "0";
     transmission += *(m_commands + i);
   }
 
   Serial1.println(transmission);
-  if(transmission != "s000a000b000c000d000r000") Serial.println(transmission);
+  if (transmission != "s000a000b000c000d000r000") Serial.println(transmission);
 }
 
-void Master::updateBtnVals(){
+void Master::updateBtnVals() {
   m_btnPastVal = m_btnVal;
   m_btnVal = digitalRead(m_pinBtn);
 
-  if(isBtnPressed()) m_btnCounter++;
+  if (isBtnPressed()) m_btnCounter++;
 }
 
-bool Master::isBtnPressed(){
+bool Master::isBtnPressed() {
   return (m_btnPastVal && !m_btnVal);
 }
 
-unsigned int Master::btnCounter(){
+unsigned int Master::btnCounter() {
   return m_btnCounter;
 }
 
-unsigned int Master::state(){
+unsigned int Master::state() {
   int masterState;
-  switch(m_btnCounter){
+  switch (m_btnCounter) {
     case 1:
       masterState = 0;
       break;
@@ -101,26 +81,26 @@ unsigned int Master::state(){
       masterState = 1;
       break;
     default:
-      if(m_btnCounter % 2 == 1) masterState = 2;
+      if (m_btnCounter % 2 == 1) masterState = 2;
       else masterState = 3;
       break;
   }
-  
+
   return masterState;
 }
 
-void Master::getPathsFromSD(){
+void Master::getPathsFromSD() {
   int pathNum = 0;
   String path = "";
 
   File pathFile = SD.open("paths.txt");
 
-  if(pathFile){
-    while(pathFile.available()){
+  if (pathFile) {
+    while (pathFile.available()) {
       char dir = char(pathFile.read());
-      if(dir != '\n')
+      if (dir != '\n')
         path +=  dir;
-      else{
+      else {
         m_paths[pathNum] = path;
         path = "";
         pathNum++;
@@ -131,32 +111,21 @@ void Master::getPathsFromSD(){
   pathFile.close();
 }
 
-void Master::printPaths(){
-  for(int i = 0; i < MAX_NUM_PATHS; i++){
+void Master::printPaths() {
+  for (int i = 0; i < MAX_NUM_PATHS; i++) {
     Serial.print("Path "); Serial.print(i); Serial.print(": "); Serial.println(m_paths[i]);
   }
 }
 
-String Master::getPath(int pathNum){
+String Master::getPath(int pathNum) {
   return m_paths[pathNum];
 }
 
-void Master::printToLCD(int startPos0, String line0, int startPos1, String line1){
-  m_lcd->clear();
-  m_lcd->setCursor(startPos0, 0);
-  m_lcd->print(line0);
-  m_lcd->setCursor(startPos1, 1);
-  m_lcd->print(line1);
-}
+int* Master::sctSplitPathCommands(String paths, int hiddenRule) {
+  int* pathCommands = new int[NUM_IDS];
 
-int* Master::splitPathCommands(String paths){
-  Serial.print("Path: "); Serial.println(paths);
-  char dir[NUM_IDS - 1];
-  paths.toCharArray(dir, NUM_IDS - 1);
-  int* pathCommands;
-
-  for(int i = 0; i < paths.length(); i++){
-    switch(dir[i]){
+  for (int i = 0; i < paths.length(); i++) {
+    switch (paths[i]) {
       case 'l':
         *(pathCommands + i) = 0b10000000 | LEFT;
         break;
@@ -167,12 +136,63 @@ int* Master::splitPathCommands(String paths){
         *(pathCommands + i) = 0b10000000 | RIGHT;
         break;
     }
-    Serial.println(*(pathCommands + i));
-    Serial.print("direction "); Serial.print(i); Serial.print(": ");
-    Serial.println(*(pathCommands + i));
   }
-  Serial.print("Returned val: "); Serial.println(*(pathCommands));
+
+  for (int i = NUM_IDS - paths.length(); i < NUM_IDS; i++) {
+    if (i == NUM_IDS - 1) *(pathCommands + NUM_IDS - 1) = *(pathCommands + hiddenRule);
+    else *(pathCommands + i) = 0;
+
+  }
 
   return pathCommands;
-  
+}
+
+void Master::sctProtocol(int hiddenRule) {
+  updateBtnVals();
+
+  if (isBtnPressed()) {
+    Serial.print("state: "); Serial.println(state());
+
+    switch (state()) {
+      case 0:
+        Serial.println("Reading SD Card");
+        getPathsFromSD();
+        Serial.println("Done...waiting for button press.");
+        digitalWrite(13, LOW);
+        break;
+      case 1:
+        printPaths();
+        Serial.println("Press button to configure first layout.");
+        break;
+      case 2:
+        if (getPath(m_pathNum) == "" || m_pathNum >= MAX_NUM_PATHS) {
+          Serial.println("No more paths to run.");
+        }
+        else {
+          Serial.println("Configuring " + getPath(m_pathNum) + " layout..." );
+
+          setCommands(sctSplitPathCommands(getPath(m_pathNum), hiddenRule));
+
+          Serial.print("Check that configuration is correct. ");
+          Serial.println("Waiting for button press...");
+          digitalWrite(13, HIGH);
+        }
+        break;
+      case 3:
+        if (getPath(m_pathNum) == "" || m_pathNum >= MAX_NUM_PATHS) {
+          Serial.println("No more paths to run.");
+        }
+        else {
+          Serial.println("Go.");
+          Serial.println("Press button upon completion...");
+          digitalWrite(13, LOW);
+          m_pathNum++;
+        }
+        break;
+    }
+
+  }
+  else setCommands(DO_NOTHING);
+
+  transmitCommands();
 }

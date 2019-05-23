@@ -1,6 +1,5 @@
 
-const int SENSOR_THRESHOLD = 850;
-const int SENSOR_THRESHOLD_DIFF = 50;
+#define SENSOR_THRESHOLD_DIFF 50
 
 class Sensor{
   public:

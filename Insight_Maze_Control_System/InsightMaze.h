@@ -3,23 +3,23 @@
 #include "Door.h"
 #include <Arduino.h>
 
-const int NUM_MAIN_SENSORS = 4;
-const int NUM_MAIN_DOORS = 6;
-const int NUM_START_SENSORS = 4;
-const int NUM_START_DOORS = 6;
-const int NUM_END_SENSORS = 3;
-const int NUM_END_DOORS = 6;
-const int NUM_END_SYRINGE_PUMPS = 3;
+#define NUM_MAIN_SENSORS 4
+#define NUM_MAIN_DOORS 6
+#define NUM_START_SENSORS 4
+#define NUM_START_DOORS 6
+#define NUM_END_SENSORS 3
+#define NUM_END_DOORS 6
+#define NUM_END_SYRINGE_PUMPS 3
+
+#define RIGHT 1
+#define LEFT 2
+#define CENTER 3
 
 const int ID_VALS_OUT[] = {0, 51, 102, 153, 204, 255};
 const int ID_VALS_IN[] = {0, 205, 409, 614, 818, 1023};
-const int ID_RES = 60;
-const int NUM_IDS = 6;
+const int NUM_IDS = sizeof(ID_VALS_OUT) / sizeof(ID_VALS_OUT[0]);
 const char IDS[] = {'s', 'a', 'b', 'c', 'd', 'r'};
-
-const int RIGHT = 1;
-const int LEFT = 2;
-const int CENTER = 3;
+#define ID_RES 50
 
 class Module {
   public:

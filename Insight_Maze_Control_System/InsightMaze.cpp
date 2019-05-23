@@ -47,16 +47,18 @@ void Module::moduleSetup(){
   m_needsToConfig = true;
 
   Serial.println("Deteriming Module ID...");
+  
   // Determines ID char of Module
   int idValIn = analogRead(m_pinID);
-  // Serial.print(idValIn); Serial.print(' ');
-
+  Serial.print("ID Input Val: "); Serial.println(idValIn);
+  
   char id = 'e';
 
   for(int i = 0; i < NUM_IDS; i++) {
     if(idValIn >= ID_VALS_IN[i] - ID_RES && idValIn <= ID_VALS_IN[i] + ID_RES)
       m_id = IDS[i];
   }
+  Serial.print("Module ID: "); Serial.println(m_id);
 
   Serial.println("Testing Doors...");
 

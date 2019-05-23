@@ -57,46 +57,6 @@ void loop() {
   ////////////////////GREG's CODE/////////////////////
 
 
-  //  ///////// SENSOR TESTING /////////////
-  //  m.updateSensors();
-  //  m.testSensors(0b000101);
-  //
-  //  if(m.isSensorRise(0)){
-  //    Serial.println("Rising Edge Detected.");
-  //    delay(1000);
-  //  }
-  //  if(m.isSensorFall(0)){
-  //    Serial.println("Falling Edge Detected.");
-  //    delay(1000);
-  //  }
-
-  //  ///////// DOOR TESTING ////////////////
-  //  m.setPath('r');
-  //  m.printDoorsStates(); Serial.println(' ');
-  //  delay(1000);
-  //
-  //  m.setPath('c');
-  //  m.printDoorsStates(); Serial.println(' ');
-  //  delay(1000);
-  //
-  //  m.setPath('l');
-  //  m.printDoorsStates(); Serial.println(' ');
-  //  delay(1000);
-
-  //  /////////// INTEGRATED TESTING ////////////
-  //  m.updateSensors();
-  //
-  //  if(needsToSetPath){
-  //    m.setPath('r');
-  //    needsToSetPath = false;
-  //  }
-  //  else{
-  //    if(m.isSensorFall(0)){
-  //      m.closeDoor(2);
-  //    }
-  //  }
-  //  m.printDoorsStates(); Serial.println(' ');
-
   ///////////// COMMUNICATION TESTING /////////////
 
   slavePracticeProtocol();
@@ -149,8 +109,9 @@ void slavePracticeProtocol() {
           break;
       }
 
-      Serial.println(' ');
+      
     }
+    Serial.println(' ');
   }
 
   doorsAsLEDs(pinsLEDs);
