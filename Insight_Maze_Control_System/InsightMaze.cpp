@@ -101,23 +101,23 @@ void Module::printDoorsStates() {
   }
 }
 
-void Module::setPath(char path){
+void Module::setPath(int path){
   switch (path){
-    case 'l':
+    case LEFT:
       for(int i = 0; i < NUM_MAIN_DOORS; i++){
         if(i == 0 || i == 3) openDoor(i);
         else closeDoor(i);
       }
       break;
 
-    case 'c':
+    case CENTER:
       for(int i = 0; i < NUM_MAIN_DOORS; i++){
         if(i == 1 || i == 4) openDoor(i);
         else closeDoor(i);
       }
       break;
 
-    case 'r':
+    case RIGHT:
       for(int i = 0; i < NUM_MAIN_DOORS; i++){
         if(i == 2 || i == 5) openDoor(i);
         else closeDoor(i);

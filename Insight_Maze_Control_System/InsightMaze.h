@@ -33,7 +33,7 @@ class Module {
     void closeAllDoors();                         // Closes all the doors of the module
     void testDoors(int closeTime, int openTime);  // Closes all the doors of the module, waits closeTime in milliseconds, then opens all the doors, waits openTime milliseconds
     void printDoorsStates();                      // Prints out the states of all the doors in the module (true->open)
-    void setPath(char path);                      // Configures the doors to a specific path of the maze; takes arguments of the following: 'l'->left, 'r'->right, 'c'->center
+    void setPath(int path);                       // Configures the doors to a specific path of the maze; takes arguments of the following: 'l'->left, 'r'->right, 'c'->center
     
     int getSensorVal(int sensorID);               // Returns the sensor value of the sensor with specific sensor ID
     void updateSensors();                         // Must be called at the beginning of void loop() to update the sensors values and states
