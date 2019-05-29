@@ -96,20 +96,20 @@ void slaveProtocol() {
     Serial.print(commands); Serial.print(" ");
     Serial.print(commands, BIN);
 
-    if ((commands & 0b11000000) == 0b10000000) { 
+    if ((commands & 0b11000000) == 0b10000000) {
       dir = (commands & 0b00000011); // first two bits contain direction information
 
-//      switch (dir) {
-//        case LEFT:
-//          modulePath = LEFT;
-//          break;
-//        case CENTER:
-//          modulePath = CENTER;
-//          break;
-//        case RIGHT:
-//          modulePath = RIGHT;
-//          break;
-//      }
+      //      switch (dir) {
+      //        case LEFT:
+      //          modulePath = LEFT;
+      //          break;
+      //        case CENTER:
+      //          modulePath = CENTER;
+      //          break;
+      //        case RIGHT:
+      //          modulePath = RIGHT;
+      //          break;
+      //      }
       m.setPath(dir);
       needsToSetPath = false;
     }
@@ -117,15 +117,16 @@ void slaveProtocol() {
   }
 
   // Code to check sensors
-  switch (dir){
+  switch (dir) {
     case LEFT:
-      
+      m.isSensorRise(0);
+
       break;
     case CENTER:
-      
+
       break;
     case RIGHT:
-      
+
       break;
   }
 
