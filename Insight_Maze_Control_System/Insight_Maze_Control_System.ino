@@ -59,7 +59,7 @@ void loop() {
 
   ////////////////////GREG's CODE/////////////////////
 
-  slaveProtocol();
+  slaveMainProtocol();
 
 
 }
@@ -86,7 +86,7 @@ void doorsAsLEDs(int leds[]) {
   }
 }
 
-void slaveProtocol() {
+void slaveMainProtocol() {
   m.updateSensors();
 
   // Skips over if commands are DO_NOTHING
@@ -134,6 +134,30 @@ void slaveProtocol() {
 
       break;
   }
+
+  doorsAsLEDs(pinsLEDs); // treats leds as door -> if door is open corresponding led will be on
+}
+
+void slaveEndProtocol(){
+  m.updateSensors();
+
+  // Skips over if commands are DO_NOTHING
+  if (commands != 0) {
+    // Prints id of module and commands received in decimal and binary
+    Serial.print(m.id()); Serial.print(" ");
+    Serial.print(commands); Serial.print(" ");
+    Serial.print(commands, BIN);
+
+    if ((commands & 0b11000000) == 0b10000000) {
+      dir = (commands & 0b00000011); // first two bits contain direction information
+
+      
+    }
+    Serial.println(' ');
+  }
+
+  // Code to check sensors
+  
 
   doorsAsLEDs(pinsLEDs); // treats leds as door -> if door is open corresponding led will be on
 }
