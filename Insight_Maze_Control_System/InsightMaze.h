@@ -18,7 +18,7 @@
 const int ID_VALS_OUT[] = {0, 51, 102, 153, 204, 255};
 const int ID_VALS_IN[] = {0, 205, 409, 614, 818, 1023};
 const int NUM_IDS = sizeof(ID_VALS_OUT) / sizeof(ID_VALS_OUT[0]);
-const char IDS[] = {'s', 'a', 'b', 'c', 'd', 'r'};
+const char IDS[] = {'a', 'b', 'c', 'd', 'e', 'f'};
 #define ID_RES 50
 
 class Module {
@@ -78,15 +78,36 @@ class EndModule {
   public:
     EndModule(int pintID, Sensor s0, Sensor s1, Sensor s2, Door d0, Door d1, Door d2, Door d3, Door d4, Door d5, SyringePump r0, SyringePump r1, SyringePump r2);
     void moduleSetup();
-    void openDoor(int doorID);
-    void closeDoor(int doorID);
-    int getSensorVal(int sensorID);
-    void checkSensors();
-    bool isSensorTrig(int sensorID);
-    void dispenseReward(int syringePumpID, float vol);
-    char id();
-    unsigned int receiveCommands();
-    void interpretCommands(unsigned int commands);
+    void openDoor(int doorID);                    // Opens the door with specific door ID 
+    void closeDoor(int doorID);                   // Closes the door with specific door ID
+    bool isDoorOpen(int doorID);                  // Returns whether or not the door with specific door ID is open (true->open)
+    void openAllDoors();                          // Opens all the doors of the module
+    void closeAllDoors();                         // Closes all the doors of the module
+    void testDoors(int closeTime, int openTime);  // Closes all the doors of the module, waits closeTime in milliseconds, then opens all the doors, waits openTime milliseconds
+    void printDoorsStates();                      // Prints out the states of all the doors in the module (true->open)
+    void setPath(int path);                       // Configures the doors to a specific path of the maze; takes arguments of the following: 'l'->left, 'r'->right, 'c'->center
+    
+    int getSensorVal(int sensorID);               // Returns the sensor value of the sensor with specific sensor ID
+    void updateSensors();                         // Must be called at the beginning of void loop() to update the sensors values and states
+    bool isSensorFall(int sensorID);              // Returns whether or not an object left the view of the sensor 
+    bool isSensorRise(int sensorID);              // Returns whether or not an object entered the view of the sensor 
+    int getSensorThresh(int sensorID);            // Returns the threshold value of the sensor with the specific sensor ID
+    bool isObjInSensorView(int sensorID);         // Returns whether or not an object is in the view of the sensor
+    bool wasObjInSensorView(int sensorID);        // Returns whether or not an object was just in the view of the sensor
+    void printSensorsVals();                      // Prints all the values of the sensors of the module
+    void printIsObjSensorView();                  // Prints whether an object is in view of the all sensors of the module 
+    void printWasObjSensorView();                 // Prints whether an object was just in view of the all sensors of the module 
+    void printSensorsIsFall();                    // Prints whether an object just left the view of the all sensors of the module 
+    void printSensorsIsRise();                    // Prints whether an object just entered the view of the all sensors of the module 
+    void printSensorsThresh();                    // Prints the thresholds of all the sensors of the module
+    void testSensors(int values);                 // Prints specified values of the sensors in the module
+
+    void dispenseReward(int syringePumpID, float vol); // Tells syringe pump of specific ID to dispense specified volume
+    
+    char id();                                    // Returns the id of the module
+    unsigned int receiveCommands();               // Returns the commands of the module
+    void interpretCommands(unsigned int commands);// Interprets the commands of the module and follows specified protocol
+
 
   private:
     char m_id;

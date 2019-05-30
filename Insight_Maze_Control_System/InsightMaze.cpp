@@ -52,7 +52,7 @@ void Module::moduleSetup(){
   int idValIn = analogRead(m_pinID);
   Serial.print("ID Input Val: "); Serial.println(idValIn);
   
-  char id = 'e';
+  char id = 'n';
 
   for(int i = 0; i < NUM_IDS; i++) {
     if(idValIn >= ID_VALS_IN[i] - ID_RES && idValIn <= ID_VALS_IN[i] + ID_RES)
@@ -321,22 +321,151 @@ void EndModule::closeDoor(int doorID){
   m_doors[doorID]->doorClose();
 }
 
+bool EndModule::isDoorOpen(int doorID){
+  return (m_doors[doorID]->isOpen());
+}
+
+void EndModule::openAllDoors(){
+  for(int i = 0; i < NUM_MAIN_DOORS; i++) openDoor(i);
+}
+
+void EndModule::closeAllDoors(){
+  for(int i = 0; i < NUM_MAIN_DOORS; i++) closeDoor(i);
+}
+    
+void EndModule::testDoors(int closeTime, int openTime){
+  closeAllDoors();
+  delay(closeTime);
+  openAllDoors();
+  delay(openTime);
+}
+
+void EndModule::printDoorsStates() {
+  Serial.print("dState:");
+  for(int i = 0; i < NUM_MAIN_DOORS; i++){
+    Serial.print(isDoorOpen(i));
+    if(i == NUM_MAIN_DOORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void EndModule::setPath(int path){
+  switch (path){
+    case LEFT:
+      for(int i = 0; i < NUM_MAIN_DOORS; i++){
+        if(i == 0 || i == 3) openDoor(i);
+        else closeDoor(i);
+      }
+      break;
+
+    case CENTER:
+      for(int i = 0; i < NUM_MAIN_DOORS; i++){
+        if(i == 1 || i == 4) openDoor(i);
+        else closeDoor(i);
+      }
+      break;
+
+    case RIGHT:
+      for(int i = 0; i < NUM_MAIN_DOORS; i++){
+        if(i == 2 || i == 5) openDoor(i);
+        else closeDoor(i);
+      }
+      break;
+  }
+}
+
 int EndModule::getSensorVal(int sensorID){
   return (m_sensors[sensorID]->getSensorVal());
 }
 
-void EndModule::checkSensors(){
-  for(int i = 0; i < NUM_END_SENSORS; i++){
-    m_sensors[i]->isPastThresh();
+void EndModule::updateSensors(){
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    m_sensors[i]->sensorUpdate();
   }
 }
 
-bool EndModule::isSensorTrig(int sensorID){
+bool EndModule::isSensorFall(int sensorID){
   return (m_sensors[sensorID]->isFallEdge());
 }
 
-void EndModule::dispenseReward(int syringePumpID, float vol){
-  m_syringePumps[syringePumpID]->dispenseMilliliters(vol);
+bool EndModule::isSensorRise(int sensorID){
+  return (m_sensors[sensorID]->isRiseEdge());
+}
+
+int EndModule::getSensorThresh(int sensorID){
+  return (m_sensors[sensorID]->getThreshold());
+}
+
+bool EndModule::isObjInSensorView(int sensorID){
+  return (m_sensors[sensorID]->isPastThresh());
+}
+
+bool EndModule::wasObjInSensorView(int sensorID){
+  return (m_sensors[sensorID]->wasPastThresh());
+}
+
+void EndModule::printSensorsVals() {
+  Serial.print("sVal:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(getSensorVal(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void EndModule::printIsObjSensorView() {
+  Serial.print("isObj:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(isObjInSensorView(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void EndModule::printWasObjSensorView() {
+  Serial.print("wasObj:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(wasObjInSensorView(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void EndModule::printSensorsIsFall() {
+  Serial.print("isFall:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(isSensorFall(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void EndModule::printSensorsIsRise() {
+  Serial.print("isRise:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(isSensorRise(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void EndModule::printSensorsThresh(){
+  Serial.print("sThresh:");
+  for(int i = 0; i < NUM_MAIN_SENSORS; i++){
+    Serial.print(getSensorThresh(i));
+    if(i == NUM_MAIN_SENSORS - 1) Serial.print(" - ");
+    else Serial.print(',');
+  }
+}
+
+void EndModule::testSensors(int values) {
+  if(bitRead(values, 0)) printSensorsVals();
+  if(bitRead(values, 1)) printSensorsThresh();
+  if(bitRead(values, 2)) printIsObjSensorView();
+  if(bitRead(values, 3)) printWasObjSensorView();
+  if(bitRead(values, 4)) printSensorsIsFall();
+  if(bitRead(values, 5)) printSensorsIsRise();
+  Serial.println(' ');
 }
 
 char EndModule::id(){
@@ -366,4 +495,8 @@ unsigned int EndModule::receiveCommands() {
 
 void EndModule::interpretCommands(unsigned int commands){
   unsigned int protocol = (commands & 0b11000000) >> 6;
+}
+
+void EndModule::dispenseReward(int syringePumpID, float vol){
+  m_syringePumps[syringePumpID]->dispenseMilliliters(vol);
 }

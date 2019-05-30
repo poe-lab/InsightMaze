@@ -11,7 +11,7 @@
 
 const int ID_VALS_OUT[] = {0, 51, 102, 153, 204, 255};
 const int NUM_IDS = sizeof(ID_VALS_OUT) / sizeof(ID_VALS_OUT[0]);
-const char IDS[] = {'s', 'a', 'b', 'c', 'd', 'r'};
+const char IDS[] = {'a', 'b', 'c', 'd', 'e', 'f'};
 
 const int DO_NOTHING[] = {0, 0, 0, 0, 0, 0};
 
