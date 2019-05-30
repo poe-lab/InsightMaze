@@ -119,7 +119,12 @@ void slaveProtocol() {
   // Code to check sensors
   switch (dir) {
     case LEFT:
-      m.isSensorRise(0);
+      if(m.isSensorFall(0)){
+        m.closeDoor(0);
+      }
+      if(m.isSensorFall(3)){
+        m.closeDoor(3);
+      }
 
       break;
     case CENTER:
