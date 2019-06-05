@@ -76,6 +76,8 @@ void doorsAsLEDs(int leds[]) {
   }
 }
 
+/////////////////// SEQUENTIAL CHOICE TASK CODE ////////////////////////////////////////////////
+
 void slaveMainProtocol() {
   m.updateSensors();
 
@@ -88,18 +90,6 @@ void slaveMainProtocol() {
 
     if ((commands & 0b11000000) == 0b10000000) {
       dir = (commands & 0b00000011); // first two bits contain direction information
-
-      //      switch (dir) {
-      //        case LEFT:
-      //          modulePath = LEFT;
-      //          break;
-      //        case CENTER:
-      //          modulePath = CENTER;
-      //          break;
-      //        case RIGHT:
-      //          modulePath = RIGHT;
-      //          break;
-      //      }
       m.setPath(dir);
       needsToSetPath = false;
     }
@@ -109,19 +99,16 @@ void slaveMainProtocol() {
   // Code to check sensors
   switch (dir) {
     case LEFT:
-      if(m.isSensorFall(0)){
-        m.closeDoor(0);
-      }
-      if(m.isSensorFall(3)){
-        m.closeDoor(3);
-      }
-
+      if(m.isSensorFall(0)) m.closeDoor(0);
+      if(m.isSensorFall(3)) m.closeDoor(3);
       break;
     case CENTER:
-
+      if(m.isSensorFall(1)) m.closeDoor(1);
+      if(m.isSensorFall(3)) m.closeDoor(4);
       break;
     case RIGHT:
-
+      if(m.isSensorFall(2)) m.closeDoor(2);
+      if(m.isSensorFall(3)) m.closeDoor(5);
       break;
   }
 
@@ -140,8 +127,8 @@ void slaveEndProtocol(){
 
     if ((commands & 0b11000000) == 0b10000000) {
       dir = (commands & 0b00000011); // first two bits contain direction information
-
-      
+      m.openAllDoors();
+      needsToSetPath = false;
     }
     Serial.println(' ');
   }
