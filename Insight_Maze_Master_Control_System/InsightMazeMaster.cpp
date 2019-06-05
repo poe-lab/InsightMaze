@@ -21,6 +21,7 @@ void Master::masterSetup() {
   }
 
   pinMode(m_pinBtn, INPUT_PULLUP);
+  pinMode(m_pinAlertIn, INPUT_PULLUP);
 
   Serial.begin(9600);
   Serial1.begin(9600);
