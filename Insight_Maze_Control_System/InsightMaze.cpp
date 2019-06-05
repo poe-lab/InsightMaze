@@ -305,6 +305,7 @@ void EndModule::moduleSetup(){
   idValIn = map(idValIn, 0, 1023, 0, 255);
   // Serial.print(idValIn); Serial.print(' ');
 
+  char id = 'n';
 
   for(int i = 0; i < NUM_IDS; i++) {
     if(idValIn >= ID_VALS_OUT[i] - 4 * ID_RES && idValIn <= ID_VALS_OUT[i] + ID_RES)
@@ -325,9 +326,11 @@ bool EndModule::isDoorOpen(int doorID){
 }
 
 void EndModule::openAllDoors(){
+  for(int i = 0; i < NUM_END_DOORS; i++) openDoor(i);
 }
 
 void EndModule::closeAllDoors(){
+  for(int i = 0; i < NUM_END_DOORS; i++) closeDoor(i);
 }
     
 void EndModule::testDoors(int closeTime, int openTime){
@@ -339,7 +342,9 @@ void EndModule::testDoors(int closeTime, int openTime){
 
 void EndModule::printDoorsStates() {
   Serial.print("dState:");
+  for(int i = 0; i < NUM_END_DOORS; i++){
     Serial.print(isDoorOpen(i));
+    if(i == NUM_END_DOORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
 }
@@ -347,6 +352,7 @@ void EndModule::printDoorsStates() {
 void EndModule::setPath(int path){
   switch (path){
     case LEFT:
+      for(int i = 0; i < NUM_END_DOORS; i++){
         if(i == 0 || i == 3) openDoor(i);
         else closeDoor(i);
       }
@@ -409,35 +415,45 @@ void EndModule::printSensorsVals() {
 
 void EndModule::printIsObjSensorView() {
   Serial.print("isObj:");
+  for(int i = 0; i < NUM_END_SENSORS; i++){
     Serial.print(isObjInSensorView(i));
+    if(i == NUM_END_SENSORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
 }
 
 void EndModule::printWasObjSensorView() {
   Serial.print("wasObj:");
+  for(int i = 0; i < NUM_END_SENSORS; i++){
     Serial.print(wasObjInSensorView(i));
+    if(i == NUM_END_SENSORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
 }
 
 void EndModule::printSensorsIsFall() {
   Serial.print("isFall:");
+  for(int i = 0; i < NUM_END_SENSORS; i++){
     Serial.print(isSensorFall(i));
+    if(i == NUM_END_SENSORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
 }
 
 void EndModule::printSensorsIsRise() {
   Serial.print("isRise:");
+  for(int i = 0; i < NUM_END_SENSORS; i++){
     Serial.print(isSensorRise(i));
+    if(i == NUM_END_SENSORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
 }
 
 void EndModule::printSensorsThresh(){
   Serial.print("sThresh:");
+  for(int i = 0; i < NUM_END_SENSORS; i++){
     Serial.print(getSensorThresh(i));
+    if(i == NUM_END_SENSORS - 1) Serial.print(" - ");
     else Serial.print(',');
   }
 }
