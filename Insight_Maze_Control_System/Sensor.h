@@ -1,5 +1,5 @@
 
-#define SENSOR_THRESHOLD_DIFF 50
+#define SENSOR_THRESHOLD_DIFF 150
 
 class Sensor{
   public:

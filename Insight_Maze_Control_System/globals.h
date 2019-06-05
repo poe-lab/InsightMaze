@@ -2,6 +2,7 @@
 #define GLOBAL_H
 
 #define PIN_ID A7
+#define PIN_ALERT A6
 
 #define PIN_SENSOR_0 A0
 #define PIN_SENSOR_1 A1

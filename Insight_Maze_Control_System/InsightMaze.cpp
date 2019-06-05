@@ -253,10 +253,11 @@ void Module::interpretCommands(unsigned int commands){
 
 
 /////////////////// End Module Class ////////////////////////////////////
-EndModule::EndModule(int pinID, Sensor s0, Sensor s1, Sensor s2, Door d0, Door d1, Door d2, Door d3, Door d4, Door d5, SyringePump r0, SyringePump r1, SyringePump r2)
+EndModule::EndModule(int pinID, int pinAlertOut, Sensor s0, Sensor s1, Sensor s2, Door d0, Door d1, Door d2, Door d3, Door d4, Door d5, SyringePump r0, SyringePump r1, SyringePump r2)
   : m_s0(s0), m_s1(s1), m_s2(s2), m_d0(d0), m_d1(d1), m_d2(d2), m_d3(d3), m_d4(d4), m_d5(d5), m_r0(r0), m_r1(r1), m_r2(r2)
 {
   m_pinID = pinID;
+  m_pinAlertOut = pinAlertOut;
   
   m_s0 = s0;
   m_s1 = s1;
@@ -287,30 +288,40 @@ EndModule::EndModule(int pinID, Sensor s0, Sensor s1, Sensor s2, Door d0, Door d
 }
 
 void EndModule::moduleSetup(){
+  Serial.begin(9600);
   // Calls setup fuinction for all sensors
+  Serial.println("Setting up sensors...");
   for(int i = 0; i < NUM_END_SENSORS; i++)
     m_sensors[i]->sensorSetup();
   
   // Calls setup function for all doors
+  Serial.println("Setting up doors...");
   for(int i = 0; i < NUM_END_DOORS; i++)
     m_doors[i]->doorSetup();
 
+  Serial.println("Setting up syringe pumps...");
   for(int i = 0; i < NUM_END_SYRINGE_PUMPS; i++){
     m_syringePumps[i]->syringeSetup();
   }
   m_needsToConfig = true;
 
+  Serial.println("Deteriming Module ID...");
+  
   // Determines ID char of Module
   int idValIn = analogRead(m_pinID);
-  idValIn = map(idValIn, 0, 1023, 0, 255);
-  // Serial.print(idValIn); Serial.print(' ');
-
+  Serial.print("ID Input Val: "); Serial.println(idValIn);
+  
   char id = 'n';
 
   for(int i = 0; i < NUM_IDS; i++) {
-    if(idValIn >= ID_VALS_OUT[i] - 4 * ID_RES && idValIn <= ID_VALS_OUT[i] + ID_RES)
+    if(idValIn >= ID_VALS_IN[i] - ID_RES && idValIn <= ID_VALS_IN[i] + ID_RES)
       m_id = IDS[i];
   }
+  Serial.print("Module ID: "); Serial.println(m_id);
+
+  Serial.println("Testing Doors...");
+
+  testDoors(1500, 1500);
 }
 
 void EndModule::openDoor(int doorID){

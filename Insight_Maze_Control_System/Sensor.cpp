@@ -18,7 +18,7 @@ void Sensor::sensorUpdate() {
 
   m_wasPastThresh = m_isPastThresh;
 
-  if(sensorVal < m_ambientLight - SENSOR_THRESHOLD_DIFF || sensorVal > m_ambientLight + SENSOR_THRESHOLD_DIFF){
+  if(sensorVal < m_ambientLight - SENSOR_THRESHOLD_DIFF){
     m_isPastThresh = true;
   }
   else

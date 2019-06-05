@@ -76,7 +76,7 @@ class Module {
 
 class EndModule {
   public:
-    EndModule(int pintID, Sensor s0, Sensor s1, Sensor s2, Door d0, Door d1, Door d2, Door d3, Door d4, Door d5, SyringePump r0, SyringePump r1, SyringePump r2);
+    EndModule(int pinID, int pinAlertOut, Sensor s0, Sensor s1, Sensor s2, Door d0, Door d1, Door d2, Door d3, Door d4, Door d5, SyringePump r0, SyringePump r1, SyringePump r2);
     void moduleSetup();
     void openDoor(int doorID);                    // Opens the door with specific door ID 
     void closeDoor(int doorID);                   // Closes the door with specific door ID
@@ -112,6 +112,7 @@ class EndModule {
   private:
     char m_id;
     int m_pinID;
+    int m_pinAlertOut;
     Door* m_doors[NUM_END_DOORS];
     Sensor* m_sensors[NUM_END_SENSORS];
     SyringePump* m_syringePumps[NUM_END_SYRINGE_PUMPS];

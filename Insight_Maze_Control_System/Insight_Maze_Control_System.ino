@@ -16,7 +16,7 @@ Door d4(PIN_DOOR_4, POS_D4[0], POS_D4[1]);
 Door d5(PIN_DOOR_5, POS_D5[0], POS_D5[1]);
 
 Module m(PIN_ID, s0, s1, s2, s3, d0, d1, d2, d3, d4, d5);
-EndModule e(PIN_ID, s0, s1, s2, d0, d1, d2, d3, d4, d5, r0, r1, r2);
+EndModule e(PIN_ID, PIN_ALERT, s0, s1, s2, d0, d1, d2, d3, d4, d5, r0, r1, r2);
 
 unsigned int commands;
 bool needsToSetPath = true;
@@ -26,7 +26,7 @@ int pinsLEDs[] = {13, 12, 8, 7, 4, 2};
 
 void setup() {
 
-  m.moduleSetup();
+  e.moduleSetup();
 
   // Sets up leds to represent doors
   for (int i = 0; i < sizeof(pinsLEDs) / sizeof(pinsLEDs[0]); i++) {
@@ -37,29 +37,19 @@ void setup() {
 }
 
 void loop() {
+  e.updateSensors();
+  e.testSensors(0b111111);
 
-  ////////////// ROCKELLE'S CODE ///////////////////
-  // Code for Start Module
-  // set path to right
-  // close doors on sensor trigger
-
-  // Code for a Module
-
-
-
-
-  ///////////////////////////////////////////////////
-
-  ////////////// JASMINE'S CODE ////////////////////
+  if(e.isSensorFall(0)){
+    digitalWrite(pinsLEDs[0], HIGH);
+    delay(1000);
+  }
+  else{
+    digitalWrite(pinsLEDs[0], LOW);
+  }
 
 
-
-
-  //////////////////////////////////////////////////
-
-  ////////////////////GREG's CODE/////////////////////
-
-  slaveMainProtocol();
+//  slaveMainProtocol();
 
 
 }

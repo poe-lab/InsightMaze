@@ -17,7 +17,7 @@ const int DO_NOTHING[] = {0, 0, 0, 0, 0, 0};
 
 class Master {
   public:
-    Master(int pinsID[], int pinBtn, int pinSDCS);            // Constructor for master class states the pins used for identifying modules, pin for button, and pin used for CS of SD card reader
+    Master(int pinsID[], int pinBtn, int pinSDCS, int pinAlertIn);            // Constructor for master class states the pins used for identifying modules, pin for button, and pin used for CS of SD card reader
     void masterSetup();                                       // Sets up master: declares pins as outputs and send out proper signals to each one; sets button pin as input 
     void setCommands(int commands[]);                         // Takes array of length 6 to send to each module and stores as master's commands
     void transmitCommands();                                  // Transmits the master's stored commands
@@ -30,11 +30,15 @@ class Master {
     String getPath(int pathNum);                              // Returns the string of specified path number
     int* sctSplitPathCommands(String paths, int hiddenRule);  // Creates array for specific path and hidden rule location                                      
     void sctProtocol(int hiddenRule);                         // Executes the protocol for SCT experiments
+    void sendAlert();                                         // Sends pulse to alert out pin of master
+    int pinAlertIn();
 
   private:
     int *m_pinsModules;
     int m_pinBtn;
     int m_pinCS;
+    int m_pinAlertOut;
+    int m_pinAlertIn;
 
     bool m_btnVal;
     bool m_btnPastVal;

@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include "InsightMazeMaster.h"
 
-Master::Master(int pinsID[], int pinBtn, int pinCS) {
+Master::Master(int pinsID[], int pinBtn, int pinCS, int pinAlertIn) {
   m_pinsModules = pinsID;
   m_pinBtn = pinBtn;
   m_pinCS = pinCS;
+  m_pinAlertIn = pinAlertIn;
 
   m_btnVal = HIGH;
   m_btnPastVal = HIGH;
@@ -35,6 +36,8 @@ void Master::masterSetup() {
 
 
   Serial.println("card initialized.");
+
+  
 }
 
 void Master::setCommands(int commands[]) {
@@ -195,4 +198,8 @@ void Master::sctProtocol(int hiddenRule) {
   else setCommands(DO_NOTHING);
 
   transmitCommands();
+}
+
+int Master::pinAlertIn(){
+  return m_pinAlertIn;
 }
