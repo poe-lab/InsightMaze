@@ -40,13 +40,16 @@ void loop() {
   e.updateSensors();
   e.testSensors(0b111111);
 
+  if (e.isSensorFall(0)) {
     digitalWrite(pinsLEDs[0], HIGH);
     delay(1000);
   }
+  else {
     digitalWrite(pinsLEDs[0], LOW);
   }
 
 
+  //  slaveMainProtocol();
 
 
 }
@@ -101,6 +104,7 @@ void slaveMainProtocol() {
   doorsAsLEDs(pinsLEDs); // treats leds as door -> if door is open corresponding led will be on
 }
 
+void slaveEndProtocol() {
   m.updateSensors();
 
   // Skips over if commands are DO_NOTHING
@@ -119,6 +123,11 @@ void slaveMainProtocol() {
   }
 
   // Code to check sensors
+  if (!needsToSetPath) {
+    
+  }
+
+
 
   doorsAsLEDs(pinsLEDs); // treats leds as door -> if door is open corresponding led will be on
 }
