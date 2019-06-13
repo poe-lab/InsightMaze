@@ -40,33 +40,17 @@ void loop() {
   e.updateSensors();
   e.testSensors(0b111111);
 
-  if(e.isSensorFall(0)){
     digitalWrite(pinsLEDs[0], HIGH);
     delay(1000);
   }
-  else{
     digitalWrite(pinsLEDs[0], LOW);
   }
 
 
-//  slaveMainProtocol();
 
 
 }
 
-/////////////////////// SYRINGE PUMP CODE //////////////////////////
-
-void testSyringePump(SyringePump syringePump, float mL, int timeDelay) {
-  syringePump.dispenseMilliliters(mL);
-  delay(timeDelay);
-}
-
-void moveSyringePump(SyringePump syringePump, bool isDirUp) {
-  if (isDirUp) syringePump.dirUp();
-  else syringePump.dirDown();
-
-  syringePump.stepMotor();
-}
 /////////////////// COMMUNICATION CODE ///////////////////////////////////////////////////////
 
 void doorsAsLEDs(int leds[]) {
@@ -97,25 +81,26 @@ void slaveMainProtocol() {
   }
 
   // Code to check sensors
-  switch (dir) {
-    case LEFT:
-      if(m.isSensorFall(0)) m.closeDoor(0);
-      if(m.isSensorFall(3)) m.closeDoor(3);
-      break;
-    case CENTER:
-      if(m.isSensorFall(1)) m.closeDoor(1);
-      if(m.isSensorFall(3)) m.closeDoor(4);
-      break;
-    case RIGHT:
-      if(m.isSensorFall(2)) m.closeDoor(2);
-      if(m.isSensorFall(3)) m.closeDoor(5);
-      break;
+  if (!needsToSetPath) {
+    switch (dir) {
+      case LEFT:
+        if (m.isSensorFall(0)) m.closeDoor(0);
+        if (m.isSensorFall(3)) m.closeDoor(3);
+        break;
+      case CENTER:
+        if (m.isSensorFall(1)) m.closeDoor(1);
+        if (m.isSensorFall(3)) m.closeDoor(4);
+        break;
+      case RIGHT:
+        if (m.isSensorFall(2)) m.closeDoor(2);
+        if (m.isSensorFall(3)) m.closeDoor(5);
+        break;
+    }
   }
 
   doorsAsLEDs(pinsLEDs); // treats leds as door -> if door is open corresponding led will be on
 }
 
-void slaveEndProtocol(){
   m.updateSensors();
 
   // Skips over if commands are DO_NOTHING
@@ -134,7 +119,6 @@ void slaveEndProtocol(){
   }
 
   // Code to check sensors
-  
 
   doorsAsLEDs(pinsLEDs); // treats leds as door -> if door is open corresponding led will be on
 }
